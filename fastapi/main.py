@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from typing import Optional
 from pydantic import BaseModel
+import uvicorn
 
 
 app =  FastAPI()
@@ -69,9 +70,23 @@ def index(limit,published:bool): #def index(limit=10,published:bool=True):>> Thi
 
 
 
+
+# working with pydantic BaseModel.
+# Pydantic's BaseModel is used to define the structure of a request body with predefined fields, types, and validations. 
+# This ensures that any incoming data follows the expected format.
 # POST METHOD
-@app.post("/blog/{id}")
-def blog_create(id:int):
-    return {'data':f'{id} - blog created.'}
+class Blog(BaseModel):
+    title : str
+    body : str
+    published : Optional[bool]
+    
+@app.post("/blog/")
+def blog_create(blog : Blog):
+    
+    return {'data':f'{blog.title} - blog created.'}
 
 
+
+
+if __name__ == "__main__":
+    uvicorn.run(app,host="127.0.0.1", port=8000) # for changing host and port number.
